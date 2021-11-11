@@ -21,26 +21,27 @@ bsub -Is -R"select[mem>80000] rusage[mem=80000]" -M80000 bash
 ```
 
 ### Query COBS index - DNA search via a kmer based approach
- 
+Note: update path for `cobs_to_table` in `query_COBS_image.sh` 
 ```bash
 query_COBS_image.sh <query.fasta> <threshold> #query.fasta can be a multifasta
 ```
 The `_results_table.txt` file provides the results of the search. 
 
 ### Sketch and query a genome agains the sourmash index
-
 ```bash
 sourmash_search.sh <input.fasta> <prefix_for_outfiles> #input can be fastq files as well
 ```
 The `<prefix_for_outfiles>_genome_similarity.txt` file provides the results of the similarity search and `<prefix_for_outfiles>_related_sample_ids.txt` is just the sample_ids and can be used as the subset input for pp_sketch. 
 
 ### Extract core and accessory distances of a subset of genomes using the pp_sketch index
-This extract the distances and generates a NJ tree based on the core distances. The script for producing the tree is adapted from John Lees. 
+This script extracts the distances and generates a NJ tree based on the core distances. The script for producing the tree (`ppsketch_tree.py`) is adapted from John Lees. 
+Note: update path for `generate_tree` in `extract_distances.sh` 
+Current issue using the pp_sketch index hosted by pathogen informatics. Had no trouble using an rsync'd version in the same directory. 
 
 ```bash
-extract_distances.sh <list_of_samples_ids_to_subset> <prefix_for_outfiles> 
+extract_distances.sh <list_of_sample_ids_to_subset> 
 ```
-The distance tree is `<prefix_for_outfiles>/outtree`. 
+The distance tree is `out/outtree`. 
 
 ### R notebooks for general plotting
 These have been designed for use on local computer and just require updated paths to 
