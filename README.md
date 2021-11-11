@@ -3,7 +3,7 @@
 661K_query_indexes contains a number of bash, python and R notebooks to utilise the databases associated with the 661K manucript https://doi.org/10.1371/journal.pbio.3001421
 
 ## Requirements
-* Singularity or Docker to use Docker://leandroishilima/661k_query_indexes:0.0.1 _(cluster)_
+* Singularity or Docker to use `Docker://leandroishilima/661k_query_indexes:0.0.1` _(cluster)_
 
 * Have downloaded the contents of the [ftp](http://ftp.ebi.ac.uk/pub/databases/ENA2018-bacteria-661k/) _(cluster)_
   * On sanger clusters: `/lustre/scratch118/infgen/pathogen/pathpipe/ENA2018-bacteria-661k`
