@@ -1,0 +1,132 @@
+---
+title: "Plotting "
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(RColorBrewer)
+library(data.table)
+
+```
+
+
+Extract species id and other characteristics for COBS hits
+```{r}
+#set working directory to source file location
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+gene_presence = read.table("../test_files/blaNDM_1.fa_0.8_results_table.txt", sep = "\t", comment.char = "",
+                   stringsAsFactors = F, header = TRUE)
+gene_presence_rounded <- gene_presence %>% 
+  mutate_if(is.numeric, round, digits=2)
+gene_presence_0.4 <- gene_presence_rounded[which(gene_presence_rounded$kmer_similarity >= 0.4),]
+
+#update path to files from the figshare
+data_661 <- as.data.frame(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File4_QC_characterisation_661K.txt", quote=""))
+
+brack <- data_661[,c(1,2,3,4,17,18,21,24,39)]
+
+gene_brack <- merge(gene_presence_0.4, brack, by = "sample_id")
+
+#filtering high quality samples - check methods of paper for 
+gene_brack_hq <- gene_brack[which(gene_brack$high_quality == TRUE),] 
+#Optionally could also do some filtering for genomes where the abundance of the major species is greater then a given threshold
+#gene_brack_hq <- gene_brack[which(gene_brack$high_quality == TRUE & gene_brack$adjust_abundance >= 80),] 
+```
+
+#Looking at the kmer similarity distribution for the hits of each gene
+Plot based on species
+```{r}
+species = list()
+queries = unique(gene_brack_hq$query)
+
+for (i in queries){
+  subset = gene_brack_hq[which(gene_brack_hq$query == i),]
+  summary.species = data.frame(table(subset$kmer_similarity, subset$species))
+  nb.cols.species = length(unique(subset$species))
+  mycolors.species <- colorRampPalette(brewer.pal(10, "Paired"))(nb.cols.species)
+  species[[i]] = ggplot(summary.species, aes(x = Var1, y = Freq, fill = Var2)) + geom_bar(stat="identity") +
+    scale_fill_manual(values = mycolors.species, name = "species") + ## sets the colors for the fill + name of the legend
+    theme_bw(base_size = 12) + ## theme of the plot, and basesize for all the text
+    theme(panel.border = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + ## theme so it looks simple 
+    scale_y_continuous(expand = c(0.02,0)) + ## location of bars relative to the y axis (there's a small gap)
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) + labs(x="Kmer similarity", y = "Assemblies") + ggtitle(i)
+}
+
+species[[1]]
+```
+
+Plot based on mlst
+```{r}
+sequence_type = list()
+queries = unique(gene_brack_hq$query)
+
+for (i in queries){
+  subset = gene_brack_hq[which(gene_brack_hq$query == i),]
+  summary.mlst = data.frame(table(subset$kmer_similarity, subset$mlst))
+  nb.cols.mlst = length(unique(subset$mlst))
+  mycolors.mlst <- colorRampPalette(brewer.pal(10, "Paired"))(nb.cols.mlst)
+  sequence_type[[i]] = ggplot(summary.mlst, aes(x = Var1, y = Freq, fill = Var2)) + geom_bar(stat="identity") +
+      scale_fill_manual(values = mycolors.mlst, name = "ST") + ## sets the colors for the fill + name of the legend
+      theme_bw(base_size = 12) + ## theme of the plot, and basesize for all the text
+      theme(panel.border = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + ## theme so it looks simple 
+      scale_y_continuous(expand = c(0.02,0)) + ## location of bars relative to the y axis (there's a small gap)
+      theme(axis.text.x = element_text(angle = 60, hjust = 1)) + labs(x="Kmer similarity", y = "Assemblies") + ggtitle(i)
+}
+
+sequence_type[[1]]
+```
+
+Plot based on phylotype
+```{r}
+phylotype = list()
+queries = unique(gene_brack_hq$query)
+
+for (i in queries){
+  subset = gene_brack_hq[which(gene_brack_hq$query == i),]
+  summary.phylo = data.frame(table(subset$kmer_similarity, subset$phylotype))
+  nb.cols.phylotype =length(unique(subset$phylotype))
+  mycolors.phylo <- colorRampPalette(brewer.pal(10, "Paired"))(nb.cols.phylotype)
+  phylotype[[i]] = ggplot(summary.phylo, aes(x = Var1, y = Freq, fill = Var2)) + geom_bar(stat="identity") +
+    scale_fill_manual(values = mycolors.phylo, name = "phylogroup") + ## sets the colors for the fill + name of the legend
+    theme_bw(base_size = 12) + ## theme of the plot, and basesize for all the text
+    theme(panel.border = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + ## theme so it looks simple 
+    scale_y_continuous(expand = c(0.02,0)) + ## location of bars relative to the y axis (there's a small gap)
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) + labs(x="Kmer similarity", y = "Assemblies") + ggtitle(i) 
+  
+}
+
+phylotype[[1]]
+
+```
+
+By serotype
+```{r}
+serotype = list()
+queries = unique(gene_brack_hq$query)
+
+for (i in queries){
+  subset = gene_brack_hq[which(gene_brack_hq$query == i),]
+  summary.sero = data.frame(table(subset$kmer_similarity, subset$predicted_serotype))
+  nb.cols.serotype =length(unique(subset$predicted_serotype))
+  mycolors.sero <- colorRampPalette(brewer.pal(10, "Paired"))(nb.cols.serotype)
+  serotype[[i]] = ggplot(summary.sero, aes(x = Var1, y = Freq, fill = Var2)) + geom_bar(stat="identity") +
+    scale_fill_manual(values = mycolors.sero, name = "serotype") + ## sets the colors for the fill + name of the legend
+    theme_bw(base_size = 12) + ## theme of the plot, and basesize for all the text
+    theme(panel.border = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + ## theme so it looks simple 
+    scale_y_continuous(expand = c(0.02,0)) + ## location of bars relative to the y axis (there's a small gap)
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) + labs(x="Kmer similarity", y = "Assemblies") + ggtitle(i) 
+  
+}
+
+serotype[[1]]
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

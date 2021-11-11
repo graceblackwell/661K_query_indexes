@@ -1,0 +1,101 @@
+---
+title: "Visualising trees and layering information on top"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+```{r}
+library(phytools)
+library(ggtree)
+library(ape)
+library(data.table)
+library(dplyr)
+library(readr)
+```
+
+Visualising tree and layering species and sourmash similarity information
+
+```{r}
+#set working directory to source file location
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) 
+
+t1 <- read.tree("../test_files/outtree")
+gt1 <- ggtree(t1)
+
+genome_similarity = read.table("../test_files/A320_genome_similarity.txt", sep = "\t", comment.char = "",
+                   stringsAsFactors = F, header = TRUE)
+genome_similarity_rounded <- genome_similarity %>% 
+  mutate_if(is.numeric, round, digits=2)
+gene_presence_0.5 <- genome_similarity_rounded[which(genome_similarity_rounded$similarity >= 0.5),]
+
+#Need to update
+characteristics_661K <- as.data.frame(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File4_QC_characterisation_661K.txt", quote=""))
+
+
+comb_characteristics <- merge(characteristics_661K, gene_presence_0.5, by = "sample_id", all.x = TRUE) 
+
+
+tree_classes <- comb_characteristics %>%
+    filter(sample_id %in% t1$tip.label) %>%
+    select(sample_id,species,similarity) %>%
+    tibble::column_to_rownames(var = "sample_id")
+
+
+gt1 %>% ggtree::gheatmap(tree_classes, color=NULL, width = 0.5, colnames_position = "top",
+                          colnames_offset_y = 50)
+```
+
+
+```{r}
+#Adding node labels
+gt1 %>% ggtree::gheatmap(tree_classes, color=NULL, width = 0.5, colnames_position = "top",
+                          colnames_offset_y = 50) + geom_text(aes(label=node), hjust=-.5)
+
+
+#Zoom in on node 833 
+outbreak_node <- ggtree:::getSubtree(gt1, 833)
+outbreak_node_just_tips <- outbreak_node[which(outbreak_node$isTip == TRUE),]
+outbreak_subtree <- ggtree(outbreak_node)
+
+tree_classes_subtree <- comb_characteristics %>%
+    filter(sample_id %in% outbreak_node_just_tips$label) %>%
+    select(sample_id,species,similarity) %>%
+    tibble::column_to_rownames(var = "sample_id")
+
+outbreak_subtree %>% ggtree::gheatmap(tree_classes_subtree, color=NULL, width = 0.5, colnames_position = "top",
+                          colnames_offset_y = 50) + geom_text(aes(label=node), hjust=+.8)
+
+#Zoom in on node 952
+outbreak_node_finer <- ggtree:::getSubtree(gt1, 952)
+outbreak_node_finer_just_tips <- outbreak_node_finer[which(outbreak_node_finer$isTip == TRUE),]
+outbreak_subtree_finer <- ggtree(outbreak_node_finer)
+
+tree_classes_subtree_finer <- comb_characteristics %>%
+    filter(sample_id %in% outbreak_node_finer_just_tips$label) %>%
+    select(sample_id,species,similarity) %>%
+    tibble::column_to_rownames(var = "sample_id")
+
+outbreak_subtree_finer %>% ggtree::gheatmap(tree_classes_subtree_finer, color=NULL, width = 0.5, colnames_position = "top",
+                          colnames_offset_y = 50) 
+
+
+outbreak_lineage_finer_samples <- outbreak_node_finer_just_tips[,c(4)]
+colnames(outbreak_lineage_finer_samples)[1] <- "sample_id"
+
+#What do we know about these strains?
+outbreak_lineage_finer_samples_info <- characteristics_661K %>%
+    filter(sample_id %in% outbreak_lineage_finer_samples$sample_id) 
+
+Full_metadata_661K <-  data.table(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File9_all_metadata_ena_661K.txt", quote = "", fill = TRUE))
+
+outbreak_lineage_finer_samples_metadata <- Full_metadata_661K %>%
+    filter(sample_id %in% outbreak_lineage_finer_samples$sample_id) 
+
+```
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
