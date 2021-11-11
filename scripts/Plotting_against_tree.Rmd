@@ -15,6 +15,33 @@ library(dplyr)
 library(readr)
 ```
 
+Visualising tree and layering species and query similarity information
+```{r}
+#set working directory to source file location
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) 
+
+tree <- ape::read.tree("../test_files/bla_NDM_outtree")
+t1 <- ggtree::ggtree(tree, right = T, ladderize = T)
+t1
+
+characteristics_661K <- as.data.frame(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File4_QC_characterisation_661K.txt", quote=""))
+gene_presence = read.table("../test_files/blaNDM_1.fa_0.8_results_table.txt", sep = "\t", comment.char = "",
+                   stringsAsFactors = F, header = TRUE)
+gene_presence_rounded <- gene_presence %>% 
+  mutate_if(is.numeric, round, digits=2)
+
+comb_characteristics <- merge(characteristics_661K,gene_presence_rounded, by = "sample_id", all.x = TRUE)
+
+tree_classes <- comb_characteristics %>%
+    filter(sample_id %in% tree$tip.label) %>%
+    select(sample_id,species,kmer_similarity) %>%
+    tibble::column_to_rownames(var = "sample_id")
+
+t1 %>% ggtree::gheatmap(tree_classes, color=NULL, width = 0.5, colnames_position = "top",
+                          colnames_offset_y = 50)
+
+```
+
 Visualising tree and layering species and sourmash similarity information
 
 ```{r}
