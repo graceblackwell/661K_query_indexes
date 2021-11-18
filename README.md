@@ -21,7 +21,7 @@ bsub -Is -R"select[mem>80000] rusage[mem=80000]" -M80000 bash
 ```
 
 ### Query COBS index - DNA search via a kmer based approach
-Note: update path for `cobs_to_table` in `query_COBS_image.sh` 
+Note: update path for `cobs_to_table.py` in `query_COBS_image.sh` 
 ```bash
 query_COBS_image.sh <query.fasta> <threshold> #query.fasta can be a multifasta
 ```
@@ -31,7 +31,7 @@ The `_results_table.txt` file provides the results of the search.
 ```bash
 sourmash_search.sh <input.fasta> <prefix_for_outfiles> #input can be fastq files as well
 ```
-The `<prefix_for_outfiles>_genome_similarity.txt` file provides the results of the similarity search and `<prefix_for_outfiles>_related_sample_ids.txt` is just the sample_ids and can be used as the subset input for pp_sketch. 
+The `_genome_similarity.txt` file provides the results of the similarity search and `_related_sample_ids.txt` is just the sample_ids and can be used as the subset input for pp_sketch. 
 
 ### Extract core and accessory distances of a subset of genomes using the pp_sketch index
 This script extracts the distances and generates a NJ tree based on the core distances. The script for producing the tree (`ppsketch_tree.py`) is adapted from John Lees. 
@@ -47,6 +47,8 @@ The distance tree is `out/outtree`.
 These have been designed for use on local computer and just require updated paths to 
 * Plotting_cobs_hits.Rmd
 * Plotting_against_tree.Rmd
+
+### Basic workflow schematic
 
 ## References
 1. Bingmann T, Bradley P, Gauger F, Iqbal Z. COBS: a Compact Bit-Sliced Signature Index. arXiv:190509624. 2019. Available: http://arxiv.org/abs/1905.09624
