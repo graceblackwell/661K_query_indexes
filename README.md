@@ -50,6 +50,8 @@ These have been designed for use on local computer and just require updated path
 
 ### Basic workflow schematic
 
+![plot](./query_flow_chart.png)
+
 ## References
 1. Bingmann T, Bradley P, Gauger F, Iqbal Z. COBS: a Compact Bit-Sliced Signature Index. arXiv:190509624. 2019. Available: http://arxiv.org/abs/1905.09624
 
