@@ -27,9 +27,9 @@ sourmash_search.sh <input.fasta> <prefix_for_outfiles> #input can be fastq files
 The `_genome_similarity.txt` file provides the results of the similarity search and `_related_sample_ids.txt` is just the sample_ids and can be used as the subset input for pp_sketch. 
 
 ### Extract core and accessory distances of a subset of genomes using the pp_sketch index
-This script extracts the distances and generates a NJ tree based on the core distances. The script for producing the tree (`ppsketch_tree.py`) is adapted from John Lees. 
+This script extracts the core distances between genomes and used these to generate a NJ tree. The script for producing the tree (`ppsketch_tree.py`), which is called by `extract_distances.sh`, is adapted from John Lees. 
 Note: update path for `generate_tree` in `extract_distances.sh` 
-Current issue using the pp_sketch index hosted by pathogen informatics. Had no trouble using an rsync'd version in the same directory. 
+Currently this needs to be performed in the same directory as where the pp-sketch index is held. 
 
 ```bash
 extract_distances.sh <list_of_sample_ids_to_subset> 
@@ -37,7 +37,7 @@ extract_distances.sh <list_of_sample_ids_to_subset>
 The distance tree is `out/outtree`. 
 
 ### R notebooks for general plotting
-These have been designed for use on local computer and just require updated paths of input files
+These have been designed for use on local computer and requires the paths of input files to be updated
 * Plotting_cobs_hits.Rmd
 * Plotting_against_tree.Rmd
 
