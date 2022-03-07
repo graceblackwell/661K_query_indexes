@@ -74,6 +74,7 @@ gt1 %>% ggtree::gheatmap(tree_classes, color=NULL, width = 0.5, colnames_positio
                           colnames_offset_y = 50)
 ```
 
+Identifying relevant subtrees ie. nodes containg all isolates of interest. This is quite manual and there is likely more automatic ways of doing this. 
 
 ```{r}
 #Adding node labels
