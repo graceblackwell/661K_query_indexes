@@ -2,6 +2,10 @@
 
 661K_query_indexes contains a number of bash, python and R notebooks to utilise the databases associated with the 661K manucript https://doi.org/10.1371/journal.pbio.3001421
 
+If you utilise this resource please reference: Blackwell GA, Hunt M, Malone KM, Lima L, Horesh G, et al. (2021) Exploring bacterial diversity via a curated and searchable snapshot of archived DNA sequences. PLOS Biology 19(11): e3001421. https://doi.org/10.1371/journal.pbio.3001421
+
+
+
 ## Requirements
 * Singularity or Docker to use `Docker://leandroishilima/661k_query_indexes:0.0.1`
 
