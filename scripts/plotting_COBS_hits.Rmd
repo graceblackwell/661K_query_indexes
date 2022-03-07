@@ -24,7 +24,7 @@ gene_presence_rounded <- gene_presence %>%
 gene_presence_0.4 <- gene_presence_rounded[which(gene_presence_rounded$kmer_similarity >= 0.4),]
 
 #update path to files from the figshare
-data_661 <- as.data.frame(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File4_QC_characterisation_661K.txt", quote=""))
+data_661 <- as.data.frame(fread("File4_QC_characterisation_661K.txt", quote=""))
 
 brack <- data_661[,c(1,2,3,4,17,18,21,24,39)]
 
