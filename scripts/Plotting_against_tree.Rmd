@@ -58,6 +58,8 @@ genome_similarity_rounded <- genome_similarity %>%
   mutate_if(is.numeric, round, digits=2)
 gene_presence_0.5 <- genome_similarity_rounded[which(genome_similarity_rounded$similarity >= 0.5),]
 
+#update path to file from figshare
+characteristics_661K <- as.data.frame(fread("File4_QC_characterisation_661K.txt", quote=""))
 
 comb_characteristics <- merge(characteristics_661K, gene_presence_0.5, by = "sample_id", all.x = TRUE) 
 
