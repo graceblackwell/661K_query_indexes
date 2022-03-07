@@ -24,7 +24,8 @@ tree <- ape::read.tree("../test_files/bla_NDM_outtree")
 t1 <- ggtree::ggtree(tree, right = T, ladderize = T)
 t1
 
-characteristics_661K <- as.data.frame(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File4_QC_characterisation_661K.txt", quote=""))
+#update path to file from figshare
+characteristics_661K <- as.data.frame(fread("File4_QC_characterisation_661K.txt", quote=""))
 gene_presence = read.table("../test_files/blaNDM_1.fa_0.8_results_table.txt", sep = "\t", comment.char = "",
                    stringsAsFactors = F, header = TRUE)
 gene_presence_rounded <- gene_presence %>% 
@@ -56,9 +57,6 @@ genome_similarity = read.table("../test_files/A320_genome_similarity.txt", sep =
 genome_similarity_rounded <- genome_similarity %>% 
   mutate_if(is.numeric, round, digits=2)
 gene_presence_0.5 <- genome_similarity_rounded[which(genome_similarity_rounded$similarity >= 0.5),]
-
-#Need to update
-characteristics_661K <- as.data.frame(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File4_QC_characterisation_661K.txt", quote=""))
 
 
 comb_characteristics <- merge(characteristics_661K, gene_presence_0.5, by = "sample_id", all.x = TRUE) 
@@ -115,7 +113,8 @@ colnames(outbreak_lineage_finer_samples)[1] <- "sample_id"
 outbreak_lineage_finer_samples_info <- characteristics_661K %>%
     filter(sample_id %in% outbreak_lineage_finer_samples$sample_id) 
 
-Full_metadata_661K <-  data.table(fread("/Users/gblackwell/Projects/ena_assembly/final_files/Final_files/files_required_qc/Figshare_resubmission/figshare_unzipped/File9_all_metadata_ena_661K.txt", quote = "", fill = TRUE))
+#update to path for file from figshare
+Full_metadata_661K <-  data.table(fread("File9_all_metadata_ena_661K.txt", quote = "", fill = TRUE))
 
 outbreak_lineage_finer_samples_metadata <- Full_metadata_661K %>%
     filter(sample_id %in% outbreak_lineage_finer_samples$sample_id) 
