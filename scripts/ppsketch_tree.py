@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-###Code written by John Lees and adapted for purpose here###
+###Code written by John Lees and very minorly adapted for purpose here###
 
 import sys
 import os
