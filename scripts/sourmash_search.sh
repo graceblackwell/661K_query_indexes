@@ -5,7 +5,7 @@ input=$1
 prefix=$2
 
 image="docker://leandroishilima/661k_query_indexes:0.0.1"
-minhash_index="/lustre/scratch118/infgen/pathogen/pathpipe/ENA2018-bacteria-661k/661K_sourmash_index_scaled.sbt.zip"
+minhash_index="661K_sourmash_index_scaled.sbt.zip"
 
 #sketch query fasta
 singularity exec -B /lustre $image sourmash compute -k 31 -n 5000 ${input} -o ${prefix}.sig
