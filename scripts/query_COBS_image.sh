@@ -4,9 +4,9 @@ query=$1
 threshold=$2
 
 image="docker://leandroishilima/661k_query_indexes:0.0.1"
-#update to relevant paths
-cobs_index="/lustre/scratch118/infgen/pathogen/pathpipe/ENA2018-bacteria-661k/661k.cobs_compact"
-cobs_to_table="/lustre/scratch118/infgen/team216/gb16/661K_instructions/COBS_searches/cobs_to_table.py"
+#update relevant paths
+cobs_index="661k.cobs_compact"
+cobs_to_table="cobs_to_table.py"
 
 #query COBS index
 singularity exec -B /lustre $image cobs query -i $cobs_index -f ${query} -t ${threshold} > ${query}_${threshold}_results.txt
