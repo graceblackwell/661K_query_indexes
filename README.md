@@ -45,9 +45,12 @@ These have been designed for use on local computer and requires the paths of inp
 * Plotting_cobs_hits.Rmd
 * Plotting_against_tree.Rmd
 
+
 ### Basic workflow schematic
 
+
 ![plot](./query_flow_chart.png)
+
 
 ## References
 1. Bingmann T, Bradley P, Gauger F, Iqbal Z. COBS: a Compact Bit-Sliced Signature Index. arXiv:190509624. 2019. Available: http://arxiv.org/abs/1905.09624
